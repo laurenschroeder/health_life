@@ -4,347 +4,342 @@
 
 
 <head>
-  <style>
-   
-    h2 {
-      text-align: center;
-      font-size: 35px;
-      font-family: Verdana;
+    <style>
+        h2 {
+            text-align: center;
+            font-size: 35px;
+            font-family: Verdana;
+        }
+        
+        h3 {
+            text-align: center;
+            font-size: 13px;
+            font-family: Verdana;
+            font-weight: lighter;
+            z-index: 100;
+            position: absolute;
+            left: 100px;
+            top: 74px;
+            color: gray;
+        }
+        h4 {
+            text-align: left;
+            font-size: 13px;
+            font-family: Verdana;
+            font-weight: lighter;
+            z-index: 100;
+            position: absolute;
+            left: 150px;
+            top: 100px;
+            width: 300px;
+            color: #8da0cb;
+        }
 
-      
-    }
-    h3 {
-      text-align: center;
-      font-size: 13px;
-      font-family: Verdana;
-      font-weight: lighter;
-      z-index:100;
-      
-      position:absolute;
-      top:74px;
-      color: gray;
-    }
-    div.years_buttons {
-      position: fixed;
-      top: 120px;
-      left: 5px;
-    }
-    div.years_buttons div {
-      background-color: 'rgb(204,235,197)';
-      padding: 3px;
-      border-radius: 10px;
-      border-color: 'blue';
-      margin: 7px;
-      font-family: Verdana;
-      font-size: 10px;
-    }
-    text {
-      font-family: Verdana;
-      font-weight: lighter;
+        div.years_buttons {
+            position: fixed;
+            top: 30px;
+            left: 5px;
+        }
+        
+        div.years_buttons div {
+            background-color: 'rgb(204,235,197)';
+            padding: 3px;
+            border-radius: 10px;
+            border-color: 'blue';
+            margin: 7px;
+            font-family: Verdana;
+            font-size: 13px;
+        }
+        
+        text {
+            font-family: Verdana;
+            font-weight: lighter;
+        }
+        
+        div.tooltip_name {
+            font-family: Verdana;
+            font-size: 12px;
+        }
+    </style>
+    <meta charset="utf-8">
+    <script src="http://d3js.org/d3.v3.min.js"></script>
 
-    }
-    div.tooltip_name {
-      font-family: Verdana;
-      font-size: 12px;
-    }
-
-  </style>
-  <meta charset="utf-8">
-  <script src="http://d3js.org/d3.v3.min.js"></script>
-  
     <script type="text/javascript">
-      function draw(data) {
-      
-      /*
-        D3.js setup code
-      */
+        function draw(data) {
 
-      //page dimension setup
+            /*
+              D3.js setup code
+            */
 
-          "use strict";
-          var margin = 120,
-              width = 1200 - margin,
-              height = 600 - margin,
-              radius=8,
-              color="blue";
+            //page dimension setup
 
-          var x = d3.scale.log()
-              .range([0, width]);
+            "use strict";
+            var margin = 120,
+                width = 1200 - margin,
+                height = 600 - margin,
+                radius = 8,
+                color = "blue";
 
-          var y = d3.scale.linear()
-              .range([0, height]);
+            var x = d3.scale.log()
+                .range([0, width]);
 
-          var chart = d3.select(".chart")
-              .attr("width", width);
+            var y = d3.scale.linear()
+                .range([0, height]);
 
-          x.domain([0, d3.max(data, function(d) {return d.value;})]);
-          y.domain([0, d3.max(data, function(d) {return d.value;})]);
+            var chart = d3.select(".chart")
+                .attr("width", width);
 
-          
-          d3.select('body')
-            .append('h2')
-            //.text('Global Health Expenditure 1995-2014');
-         
-          var svg = d3.select("body")
-            .append("svg")
-              .attr("width", width + margin)
-              .attr("height", height + margin)
-            .append('g')
-                .attr('class','chart');
+            x.domain([0, d3.max(data, function(d) {
+                return d.value;
+            })]);
+            y.domain([0, d3.max(data, function(d) {
+                return d.value;
+            })]);
 
 
-          
-//nest data to filter through
-          var nested = d3.nest()
-            .key(function(d) { return d.year; })
-            .entries(data);
+            d3.select('body')
+                .append('h2');
 
-          function key_func(d) {
-            return d['year'];
-          }
+            d3.select('body')
+                        .append('h4')
+                        .text('From 1995-2014 there has been increased spending on healthcare in countries across the world, along with a rise in life expectancy. This trend is especially pronounced in African countries like Rwanda where life expectancy increased by over 20 years during this timeframe.');
 
-          var expense_extent = d3.extent(data, function(d) {
-            return d['expense'];
-          });
-
-          var life_extent = d3.extent(data, function(d) {
-            return d['life'];
-          });
-
-          var expense_scale=d3.scale.log()
-            .range([margin,width])
-            .domain(expense_extent);
-
-          var life_scale=d3.scale.linear()
-            .range([height,50])
-            .domain(life_extent);
-
-          x.fontSize = "auto";
-          y.fontSize = "auto";
-          
-          // add axes
-          var expense_axis=d3.svg.axis()
-            .scale(expense_scale)
-            .tickFormat(function (d) {
-        return expense_scale.tickFormat(10,d3.format(",d"))(d)
-});
-
-          var life_axis=d3.svg.axis()
-            .scale(life_scale)
-            .orient("left");
-
-          //draw axes
-
-          d3.select("svg")
-            .append('g')
-            .attr('class','x axis')
-            .attr('transform',"translate(0,"+height + ")")
-            .call(expense_axis);
-
-          d3.select("svg")
-            .append('g')
-            .attr('class','y axis')
-            .attr('transform',"translate("+margin + ",0)")
-            .call(life_axis);
-
-      /*
-        add axis labels
-
-      */
-          svg.append("text") .attr("class", "y label") .attr("text-anchor", "end") .attr("dx", -200) .attr("dy", margin-50) .attr("transform", "rotate(-90)") .text("Life Expectancy (years)");
-
-          svg.append("text")
-            .attr("class", "x label")
-            .attr("text-anchor", "end")
-            .attr("x", width-300)
-            .attr("y", height +50)
-            .text("Health expenditure in USD per capita (PPP)");
-
-              //create mouseover for country name
-            var tooltip = d3.select("body")
-              .append("div")
-              .attr('class','tooltip_name')
-              .style("position", "absolute")
-              .style("z-index", "10")
-              .style("visibility", "hidden")
-
-              .text('tooltip');
-
-              
-    
-          //plot graph
-          function plot_graph(filtered_data){
-
-            d3.select('svg')
-            .selectAll("circle")
+            var svg = d3.select("body")
+                .append("svg")
+                .attr("width", width + margin)
+                .attr("height", height + margin)
+                .append('g')
+                .attr('class', 'chart');
 
 
-            .data(filtered_data)
-            .enter()
-            .append("circle")
-            .on("mouseover", function(d){return tooltip.style("visibility", "visible"), 
-              tooltip.text(d.country);})
-            .on("mousemove", function(){return tooltip.style("top",
-                       (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
-            .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
-           
-            d3.selectAll('circle')
+            function key_func(d) {
+                return d['year'];
+            }
 
-              .attr('cx',function(d) {
-                  return expense_scale(d['expense']);
-              })
-              .attr('cy', function(d) {
-                  return life_scale(d['life']);
-              })
-              .attr('r',radius)
-              .attr('fill',function(d) {
-                if (d['continent'] === 'Asia') {return "rgb(102,194,165)"}
-                  
-                if (d['continent'] === 'Europe') {return "rgb(252,141,98)"}
-                  
-                if (d['continent'] === 'North America') {return "rgb(141,160,203)"}
-                  
-                if (d['continent'] === 'South America') {return "rgb(231,138,195)"}
-                  
-                if (d['continent'] === 'Oceania') {return "rgb(166,216,84)"}
-                  
-                if (d['continent'] === 'Africa') {return "rgb(255,217,47)"}
-                  else {
-                    return 'black'}
-
-              });
-            };
-
-          var years_interest=['1995', '1996','1997','1998','1999','2000','2001',
-                '2002','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2013','2014'];
-
-          //add function to filter data by each year in years of interest
-
-          function update(year_chosen) {
-            var filtered = data.filter(function(d) {
-              return d['year'] === year_chosen;
-
+            var expense_extent = d3.extent(data, function(d) {
+                return d['expense'];
             });
-            plot_graph(filtered);
 
+            var life_extent = d3.extent(data, function(d) {
+                return d['life'];
+            });
 
-            d3.select('h2')
-            .text('Global Health Expenditure in Year ' + year_chosen);
-            
-          };
-          
-          // animate visualization for the number years in the specified list
-          var year_idx=0;
+            var expense_scale = d3.scale.log()
+                .range([margin, width])
+                .domain(expense_extent);
 
-          var year_interval = setInterval(function() {
-            update(years_interest[year_idx]);
+            var life_scale = d3.scale.linear()
+                .range([height, 50])
+                .domain(life_extent);
 
-            year_idx++;
+            x.fontSize = "auto";
+            y.fontSize = "auto";
 
-            if(year_idx >= years_interest.length) {
-              clearInterval(year_interval);
-
-              d3.select('body')
-            .append('h3')
-            .text('Note: Scroll over datapoints to see country name. View specific years using the buttons on the left.' );
-
-
-
-              //create buttons for each year
-              var buttons = d3.select('body')
-                .append('div')
-                .attr('class','years_buttons')
-                .selectAll('div')
-                .data(years_interest)
-                .enter()
-                .append('div')
-                .style('background','rgb(204,235,197)')
-                .style('color','black')
-                .text(function(d) {
-                  return d;
+            // add axes
+            var expense_axis = d3.svg.axis()
+                .scale(expense_scale)
+                .tickFormat(function(d) {
+                    return expense_scale.tickFormat(10, d3.format(",d"))(d)
                 });
 
-                //make button clickable
-              buttons.on('click',function(d){
-                d3.select('.years_buttons')
-                  .selectAll('div')
-              
+            var life_axis = d3.svg.axis()
+                .scale(life_scale)
+                .orient("left");
 
-                  .transition()
-                  .duration(500)
-                  .style('color','black')
-                  .style('background','rgb(204,235,197)');
 
-                d3.select(this)
-                  .transition()
-                  .duration(500)
-                  .style('background','rgb(229,196,148)')
+            //draw axes
 
-                update(d);
-              });
-              
-            }
-          }, 400);
+            d3.select("svg")
+                .append('g')
+                .attr('transform', "translate(0," + height + ")")
+                .call(expense_axis);
+
+            d3.select("svg")
+                .append('g')
+                .attr('class', 'axis')
+                .attr('transform', "translate(" + margin + ",0)")
+                .call(life_axis);
+
+            //add axis labels
+
+            var ylabel = svg.append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("dx", -200)
+                .attr("dy", margin - 50)
+                .attr("transform", "rotate(-90)")
+                .text("Life Expectancy (years)");
+
+            var xlabel = svg.append("text")
+                .attr("class", "x label")
+                .attr("text-anchor", "end")
+                .attr("x", width - 300)
+                .attr("y", height + 50)
+                .text("Health expenditure in USD per capita (PPP)");
+
+            //add color scale
+            var color_scale = d3.scale.ordinal()
+                .range(['#ffd92f','#fc8d62','#8da0cb','#e78ac3','#66c2a5','#a6d854'])
+                .domain(["Africa", "Asia", "Europe", "North America", "South America", "Oceania"]);
+
+            //create mouseover for country name
+            var tooltip = d3.select("body")
+                .append("div")
+                .attr('class', 'tooltip_name')
+                .style("position", "absolute")
+                .style("z-index", "10")
+                .style("visibility", "hidden")
+                .text('tooltip');
+
+            //plot graph
+            function plot_graph(filtered_data) {
+                    d3.select('svg')
+                    .selectAll("circle")
+                    .data(filtered_data)
+                    .enter()
+                    .append("circle")
+                    .on("mouseover", function(d) {
+                        return tooltip.style("visibility", "visible"),
+                            tooltip.text(d.country);
+                    })
+                    .on("mousemove", function() {
+                        return tooltip.style("top", (d3.event.pageY - 10) + "px")
+                        .style("left", (d3.event.pageX + 10) + "px");
+                    })
+                    .on("mouseout", function() {
+                        return tooltip
+                        .style("visibility", "hidden");
+                    });
+
+                d3.selectAll('circle')
+                    .attr('cx', function(d) {
+                        return expense_scale(d['expense']);
+                    })
+                    .attr('cy', function(d) {
+                        return life_scale(d['life']);
+                    })
+                    .attr('r', radius)
+                    .attr('opacity',.8)
+                    .attr('fill', function(d) {
+                        return color_scale(d['continent'])
+                    });
+            };
+
+            var years_interest = ['1995', '1996', '1997', '1998', '1999', '2000', '2001',
+                '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014'
+            ];
+
+            //add function to filter data by each year in years of interest
+
+            function update(year_chosen) {
+                var filtered = data.filter(function(d) {
+                    return d['year'] === year_chosen;
+
+                });
+                plot_graph(filtered);
+
+
+                d3.select('h2')
+                    .text('Global Health Expenditure in Year ' + year_chosen);
+
+            };
+
+            // animate visualization for the number years in the specified list
+            var year_idx = 0;
+
+            var year_interval = setInterval(function() {
+                update(years_interest[year_idx]);
+
+                year_idx++;
+
+                if (year_idx >= years_interest.length) {
+                    clearInterval(year_interval);
+
+                    d3.select('body')
+                        .append('h3')
+                        .text('Note: Scroll over datapoints to see country name. View specific years using the buttons on the left.');
+
+                    //create buttons for each year
+                    var buttons = d3.select('body')
+                        .append('div')
+                        .attr('class', 'years_buttons')
+                        .selectAll('div')
+                        .data(years_interest)
+                        .enter()
+                        .append('div')
+                        .style('background', 'rgb(204,235,197)')
+                        .style('color', 'black')
+                        .text(function(d) {
+                            return d;
+                        });
+
+                    //make button clickable
+                    buttons.on('click', function(d) {
+                        d3.select('.years_buttons')
+                            .selectAll('div')
+                            .transition()
+                            .duration(500)
+                            .style('color', 'black')
+                            .style('background', 'rgb(204,235,197)');
+
+                        d3.select(this)
+                            .transition()
+                            .duration(500)
+                            .style('background', 'rgb(229,196,148)')
+
+                        update(d);
+                    });
+
+                }
+            }, 400);
 
 
             //build legend object
-          var legend =svg.append('g')
-            .attr('class','legend')
-            //230 pixels down, 170 across
-            .attr("transform","translate(" + (width-170) + "," + 230 + ")" )
-            .selectAll("g")
-            .data(["Africa","Asia","Europe","North America", "South America", "Oceania"])
-            .enter().append("g");
+            var legend = svg.append('g')
+                .attr('class', 'legend')
+                //230 pixels down, 170 across
+                .attr("transform", "translate(" + (width - 170) + "," + 230 + ")")
+                .selectAll("g")
+                .data(["Africa", "Asia", "Europe", "North America", "South America", "Oceania"])
+                .enter().append("g");
 
-          legend.append("ellipse")
-            .attr("cy", function(d,i) {
-              return i * 30;
-            })
-            .attr('ry',radius)
-            .attr('rx',radius)
-            .attr('fill',function(d) {
-              if (d === 'Asia') {return "rgb(102,194,165)"}
-                
-              if (d === 'Europe') {return "rgb(252,141,98)"}
-                
-              if (d === 'North America') {return "rgb(141,160,203)"}
-                
-              if (d === 'South America') {return "rgb(231,138,195)"}
-                
-              if (d === 'Oceania') {return "rgb(166,216,84)"}
-                
-              if (d === 'Africa') {return "rgb(255,217,47)"}
-                else {
-                  return 'black'}
-            });
+            legend.append("ellipse")
+                .attr("cy", function(d, i) {
+                    return i * 30;
+                })
+                .attr('ry', radius)
+                .attr('rx', radius)
+                .attr('fill', function(d) {
+                        return color_scale(d)
+                });
 
-          
 
-          legend.append("text")
-            .attr("y", function(d,i) {
-              return i * 30 + 5;
-            })
-            .attr("x", radius*5)
-            .text(function(d) {
-              return d;
-            });
+            legend.append("text")
+                .attr("y", function(d, i) {
+                    return i * 30 + 5;
+                })
+                .attr("x", radius * 5)
+                .text(function(d) {
+                    return d;
+                });
 
 
         };
-      </script>
-  </head>
+    </script>
+</head>
+
 <body>
-  <script type="text/javascript">
-  /*
-    Use D3 to load the text file
-    and pass the contents of it to the draw function
-    */
-  d3.csv("healthdata.csv", function(d) {
-    d['expense']=+d['expense'];
-    d['life']=+d['life'];
-    return d;
-  },draw);
-  
-  </script>
+    <script type="text/javascript">
+        /*
+            Use D3 to load the text file
+            and pass the contents of it to the draw function
+            */
+        d3.csv("healthdata.csv", function(d) {
+            d['expense'] = +d['expense'];
+            d['life'] = +d['life'];
+            return d;
+        }, draw);
+    </script>
 </body>
+
 </html>
