@@ -22,6 +22,7 @@
             top: 74px;
             color: gray;
         }
+        
         h4 {
             text-align: left;
             font-size: 13px;
@@ -32,7 +33,7 @@
             left: 150px;
             top: 100px;
             width: 300px;
-            color: #8da0cb;
+            color: gray;
         }
 
         div.years_buttons {
@@ -101,8 +102,8 @@
                 .append('h2');
 
             d3.select('body')
-                        .append('h4')
-                        .text('From 1995-2014 there has been increased spending on healthcare in countries across the world, along with a rise in life expectancy. This trend is especially pronounced in African countries like Rwanda where life expectancy increased by over 20 years during this timeframe.');
+                .append('h4')
+                .text('From 1995-2014 there has been increased spending on healthcare in countries across the world, along with a rise in life expectancy. This trend is especially pronounced in African countries like Rwanda where life expectancy increased by over 20 years during this timeframe. ');
 
             var svg = d3.select("body")
                 .append("svg")
