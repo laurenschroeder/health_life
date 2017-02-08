@@ -11,9 +11,11 @@ Countries are tagged by continent using a color key. This makes it much easier t
 ## Resources - 
 Global Health Expenditure database. World Health Organization. World Development Indicators. World DataBank.
 
+https://www.theguardian.com/world/2014/apr/04/rwanda-life-expectancy-doubles-20-years
+
 ## Feedback-
 
-Some feedback that I've iterated on throughout the design process:
+Some feedback (received by four different people) that I've iterated on throughout the design process:
 
 1. Decrease space between title and graph.
   I changed the scale range to leave less of a gap
@@ -21,5 +23,6 @@ Some feedback that I've iterated on throughout the design process:
   The animation begins at year 1995 instead of displaying an empty graph with a title and animation speed was increased.
 3. Increase size of circles so it's easier to find a country, drop animation (georgeliu1998)
   Radius is increased to make scrolling across circles easier
+4. Decrease opacity of data points to see overlap, increase size of buttons to match other text. Add explanatory text at top of visualization.
   
   I chose to keep the animation to show the trend of increased spending and life expectancy over time, especially in Africa.
