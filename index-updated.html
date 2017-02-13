@@ -22,7 +22,7 @@
             top: 74px;
             color: gray;
         }
-        
+
         h4 {
             text-align: left;
             font-size: 13px;
@@ -103,7 +103,7 @@
 
             d3.select('body')
                 .append('h4')
-                .text('From 1995-2014 there has been increased spending on healthcare in countries across the world, along with a rise in life expectancy. This trend is especially pronounced in African countries like Rwanda where life expectancy increased by over 20 years during this timeframe. ');
+                .text('From 1995-2014 there has been increased spending on healthcare in countries across the world, along with a rise in life expectancy. This trend is especially pronounced in African countries like Rwanda (outlined in red) where life expectancy increased by over 20 years during this timeframe. ');
 
             var svg = d3.select("body")
                 .append("svg")
@@ -152,6 +152,7 @@
 
             d3.select("svg")
                 .append('g')
+                .attr('class', 'axis')
                 .attr('transform', "translate(0," + height + ")")
                 .call(expense_axis);
 
@@ -160,6 +161,9 @@
                 .attr('class', 'axis')
                 .attr('transform', "translate(" + margin + ",0)")
                 .call(life_axis);
+
+            d3.selectAll('.axis line, .axis path')
+                .style({'stroke': 'Gray', 'fill': 'none', 'stroke-width': '1px'});
 
             //add axis labels
 
@@ -182,6 +186,7 @@
             var color_scale = d3.scale.ordinal()
                 .range(['#ffd92f','#fc8d62','#8da0cb','#e78ac3','#66c2a5','#a6d854'])
                 .domain(["Africa", "Asia", "Europe", "North America", "South America", "Oceania"]);
+
 
             //create mouseover for country name
             var tooltip = d3.select("body")
@@ -223,6 +228,11 @@
                     .attr('opacity',.8)
                     .attr('fill', function(d) {
                         return color_scale(d['continent'])
+                    })
+                    .attr('stroke',function(d) {
+                        if (d['country'] === 'Rwanda') {
+                          return 'red'
+                        }
                     });
             };
 
